@@ -1,0 +1,57 @@
+DATASET:
+  NAME: 'mpii'
+  ROOT: 'Dataset/mpii/'
+  KEEP_ORIGIN: True
+
+  TRAIN_AUGMENT:
+    USE: True
+    FLIP: True
+    ROT_FACTOR: 30
+    SCALE_FACTOR: 0.2
+
+
+MODEL:
+  NAME: 'pose-resnet'
+  RESUME: pose_estimation/trained/baseline/pose-resnet50-m.pth
+  PRETRAINED: pose_estimation/imagenet-pretrain/resnet50-m.pth
+
+  EXTRA:
+    NUM_LAYERS: 50
+    FINAL_CONV_KERNEL: 1
+    DECONV_WITH_BIAS: False
+    NUM_DECONV_LAYERS: 3
+    NUM_DECONV_FILTERS:
+      - 256
+      - 256
+      - 256
+    NUM_DECONV_KERNELS:
+      - 4
+      - 4
+      - 4
+
+
+TRAIN:
+  BATCH_SIZE: 16
+
+  LR: 1e-3
+  LAST_EPOCH: -1
+  NUM_EPOCH: 150
+
+  OPTIM: 'adam'
+  MOMENTUM: 0.9
+  WEIGHT_DECAY: 0.
+
+  SCHEDULER:
+    NAME: 'multi-step'
+    GAMMA: 0.1
+    MILESTONES:
+      - 90
+      - 135
+
+TEST:
+  BATCH_SIZE: 32
+  FLIP_TEST: True
+
+  DATA_MODE: 1
+  TRAINED_MODEL: pose_estimation/trained/baseline/pose-resnet50-m.pth
+#  TRAINED_MODEL: pose_estimation/trained/box_refine/resnet-50/pose-resnet-Epoch-{137}-Accuracy-{0.9179}.pth

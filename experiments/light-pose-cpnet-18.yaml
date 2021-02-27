@@ -1,0 +1,47 @@
+DATASET:
+  NAME: 'mpii'
+  ROOT: 'Dataset/mpii/'
+  KEEP_ORIGIN: False
+
+  TRAIN_AUGMENT:
+    USE: True
+    FLIP: True
+    ROT_FACTOR: 30
+    SCALE_FACTOR: 0.2
+
+
+MODEL:
+  NAME: 'light-pose-cpnet'
+  RESUME:
+  PRETRAINED:
+
+  EXTRA:
+    USE_CPDUC: False
+
+
+TRAIN:
+  BATCH_SIZE: 128
+
+  LR: 1e-4
+  LAST_EPOCH: -1
+  NUM_EPOCH: 150
+
+  OPTIM: 'adam'
+  MOMENTUM: 0.9
+  WEIGHT_DECAY: 0.
+
+  SCHEDULER:
+    NAME: 'ReduceLROnPlateau'
+    MODE: 'max'
+    FACTOR: 0.1
+    PATIENCE: 10
+    VERBOSE: True
+    THRESHOLD: 1e-4
+    THRESHOLD_MODE: 'abs'
+    COOLDOWN: 0
+    MIN_LR: 1e-5
+
+TEST:
+  BATCH_SIZE: 128
+  FLIP_TEST: True
+  TRAINED_MODEL: pose_estimation/trained/light_pose/cpnet/light-pose-cpnet-18-duc.pth

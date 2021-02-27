@@ -1,0 +1,8 @@
+*.jpg
+checkpoints/*
+log/*
+.idea/*
+cocoapi/
+.DS_Store
+.ipynb_checkpoints
+__pycache__
