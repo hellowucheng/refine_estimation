@@ -59,7 +59,7 @@ class Mpii(data.Dataset):
 
         img_path = os.path.join(self.root, 'images/', ant['image'])
 
-        joints = np.array(ant['joints'])
+        joints = np.array(ant['joints']) - 1
         joints_p = np.array(ant['joints']) - 1
 
         joints_vis = np.array(ant['joints_vis'])
@@ -93,9 +93,10 @@ class Mpii(data.Dataset):
 
             meta = {'index': index,
                     'trans_v': trans_v,
+                    'image': ant['image'],
                     'center': center, 'scale': scale,
                     'joints': joints, 'joints_p': joints_p,
-                    'joints_vis': joints_vis, 'target_weight': target_weight}
+                    'joints_vis': np.array(ant['joints_vis']), 'target_weight': target_weight}
             return input, torch.from_numpy(target), meta
 
         # 数据集提供的scale不准, 常出现偏大的情况, 使用center + joints重新修正scale
@@ -167,9 +168,10 @@ class Mpii(data.Dataset):
 
         meta = {'index': index,
                 'trans_v': trans_v,
+                'image': ant['image'],
                 'center': center, 'scale': scale,
                 'joints': joints, 'joints_p': joints_p,
-                'joints_vis': joints_vis, 'target_weight': target_weight}
+                'joints_vis': np.array(ant['joints_vis']), 'target_weight': target_weight}
         return input, torch.from_numpy(target), meta
 
     def __len__(self):

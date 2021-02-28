@@ -66,8 +66,17 @@ _C.MODEL.EXTRA.USE_GHOSTDUC = False
 
 # 损失函数
 _C.LOSS = CN()
+
 _C.LOSS.NAME = 'JointsMSELoss'
-_C.LOSS.USE_TARGET_WEIGHT = True
+
+_C.LOSS.EXTRA = CN(new_allowed=True)
+
+_C.LOSS.EXTRA.USE_TARGET_WEIGHT = True
+
+_C.LOSS.EXTRA.FOCAL_BETA = 4
+_C.LOSS.EXTRA.FOCAL_ALPHA = 2
+
+_C.LOSS.EXTRA.BALANCED_ALPHA = 0.005
 
 
 # 训练相关
@@ -118,7 +127,7 @@ def get_config():
     if len(sys.argv) > 1:
         _C.EXPERIMENTS_PATH = sys.argv[1]
     else:
-        _C.EXPERIMENTS_PATH = '/root/Projects/pose_estimation/experiments/light-pose-shufflenet-18.yaml'
+        _C.EXPERIMENTS_PATH = '/root/Projects/refine_estimation/experiments/occ-resnet50.yaml'
 
     if Path(_C.EXPERIMENTS_PATH).is_file():
         print('| load experiments from:', _C.EXPERIMENTS_PATH)

@@ -11,11 +11,6 @@ from utils.transforms import flip_back
 from utils.factory import getDataset, getModel
 
 
-joint_names = ['right_ankle', 'right_knee', 'right_hip', 'left_hip', 'left_knee',
-               'left_ankle', 'pelvis', 'thorax', 'upper_neck', 'head_top', 'right_wrist',
-               'right_elbow', 'right_shoulder', 'left_shoulder', 'left_elbow', 'left_wrist']
-joints_names_dict = {name: i + 1 for i, name in enumerate(joint_names)}
-
 if __name__ == '__main__':
     timer = Timer()
     cfg = get_config()
@@ -33,12 +28,10 @@ if __name__ == '__main__':
 
     net = getModel(cfg, is_test=True).to(device)
 
-    # 统计指标
-    # acces = [AverageMeter() for _ in range(test_set.num_joints + 1)]
-
     # 验证
     net.eval()
     res = []
+
     predictions = torch.Tensor(len(test_set), test_set.num_joints, 2)
     with torch.no_grad():
         idx = 0
@@ -55,10 +48,6 @@ if __name__ == '__main__':
                 # 翻转：得到的热图向右平移一个像素，能提高准确率
                 flip_output[:, :, :, 1:] = flip_output.copy()[:, :, :, 0:-1]
                 output = (output + torch.from_numpy(flip_output.copy()).to(device)) * 0.5
-
-            # pckhs = calc_accuracy(output, target)
-            # for j in range(len(acces)):
-            #     acces[j].add(pckhs[j][0], pckhs[j][1])
 
             # 预测坐标
             preds = get_final_preds(output.cpu(), meta['center'].numpy(), meta['scale'], meta['trans_v'], [64, 64])
@@ -99,17 +88,7 @@ if __name__ == '__main__':
             pickle.dump({'predictions': predictions.cpu().numpy()}, f)
         print('saved results info WORK_DIR: meta-info.json / predictions.json!')
 
-    # print('|%-10s|%-10s|%-10s|%-10s|%-10s|%-10s|%-10s|%-10s|' % ('Head', 'Shoulder', 'Elbow', 'Wrist', 'Hip', 'Knee', 'Ankle', 'Mean'))
-    # print('|%-10s|%-10s|%-10s|%-10s|%-10s|%-10s|%-10s|%-10s|' % ('%.4f' % acces[joints_names_dict['head_top']].mean(),
-    #                                                              '%.4f' % ((acces[joints_names_dict['left_shoulder']].mean() + acces[joints_names_dict['right_shoulder']].mean()) / 2),
-    #                                                              '%.4f' % ((acces[joints_names_dict['left_elbow']].mean() + acces[joints_names_dict['right_elbow']].mean()) / 2),
-    #                                                              '%.4f' % ((acces[joints_names_dict['left_wrist']].mean() + acces[joints_names_dict['right_wrist']].mean()) / 2),
-    #                                                              '%.4f' % ((acces[joints_names_dict['left_hip']].mean() + acces[joints_names_dict['right_hip']].mean()) / 2),
-    #                                                              '%.4f' % ((acces[joints_names_dict['left_knee']].mean() + acces[joints_names_dict['right_knee']].mean()) / 2),
-    #                                                              '%.4f' % ((acces[joints_names_dict['left_ankle']].mean() + acces[joints_names_dict['right_ankle']].mean()) / 2),
-    #                                                              '%.4f' % acces[0].mean()))
-
-    # 评估
+    # 评估PCKh
     name_value = evaluate(cfg, predictions)
     print('----------------------------------------------------------------------------------------------------')
     print('|%-10s|%-10s|%-10s|%-10s|%-10s|%-10s|%-10s|%-10s|%-10s|' % ('Head', 'Shoulder', 'Elbow', 'Wrist', 'Hip', 'Knee', 'Ankle', 'Mean', 'Mean@0.1'))
@@ -122,8 +101,9 @@ if __name__ == '__main__':
                                                                        '%.3f' % name_value['Ankle'],
                                                                        '%.3f' % name_value['Mean'],
                                                                        '%.3f' % name_value['Mean@0.1']))
-    print('-----------------------------------------------------------------------------------------------------------------------------------------------------------')
+    print('----------------------------------------------------------------------------------------------------')
 
+    print('-----------------------------------------------------------------------------------------------------------------------------------------------------------')
     print('|%-10s|%-10s|%-10s|%-10s|%-10s|%-10s|%-10s|%-10s|%-10s|%-10s|%-10s|%-10s|%-10s|%-10s|' % ('head', 'neck', 'lsho', 'rsho', 'lelb', 'relb', 'lwri', 'rwri', 'lhip', 'rhip', 'lkne', 'rkne', 'lank', 'rank'))
     print('|%-10s|%-10s|%-10s|%-10s|%-10s|%-10s|%-10s|%-10s|%-10s|%-10s|%-10s|%-10s|%-10s|%-10s|' % ('%.3f' % name_value['Head'],
                                                                                                      '%.3f' % name_value['neck'],

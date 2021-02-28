@@ -1,6 +1,6 @@
 import torch
 
-from core.loss import JointsMSELoss
+from core.loss import JointsMSELoss, JointsFocalLoss, JointsMSEBalancedLoss
 
 from models.pose_resnet import PoseResNet
 from models.light_pose_resnet import LightPoseResNet
@@ -16,8 +16,10 @@ from utils.misc import isExists
 def getDataset(cfg, is_train=True):
     if is_train:
         print('| train dataset:', cfg.DATASET.NAME)
+        print('  | data-mode:', cfg.TRAIN.DATA_MODE)
     else:
         print('| valid dataset:', cfg.DATASET.NAME)
+        print('  | data-mode:', cfg.TEST.DATA_MODE)
 
     if cfg.DATASET.NAME.lower() == 'lspet':
         return Lspet(cfg, is_train)
@@ -110,4 +112,14 @@ def getScheduler(cfg, optimizer):
 def getCriterion(cfg):
     print('| criterion:', cfg.LOSS.NAME)
     if cfg.LOSS.NAME.lower() == 'jointsmseloss':
-        return JointsMSELoss(use_target_weight=cfg.LOSS.USE_TARGET_WEIGHT)
+        print('  | use_target_weight:', cfg.LOSS.EXTRA.USE_TARGET_WEIGHT)
+        return JointsMSELoss(use_target_weight=cfg.LOSS.EXTRA.USE_TARGET_WEIGHT)
+    elif cfg.LOSS.NAME.lower() == 'jointsmsebalancedloss':
+        print('  | balanced_alpha:', cfg.LOSS.EXTRA.BALANCED_ALPHA)
+        return JointsMSEBalancedLoss(alpha=cfg.LOSS.EXTRA.BALANCED_ALPHA)
+    elif cfg.LOSS.NAME.lower() == 'jointsfocalloss':
+        print('  | focal_beta:', cfg.LOSS.EXTRA.FOCAL_BETA)
+        print('  | focal_alpha:', cfg.LOSS.EXTRA.FOCAL_ALPHA)
+        return JointsFocalLoss(cfg.LOSS.EXTRA.FOCAL_BETA, cfg.LOSS.EXTRA.FOCAL_ALPHA)
+    else:
+        raise RuntimeError('Loss Not Defined! : %s' % cfg.LOSS.NAME)

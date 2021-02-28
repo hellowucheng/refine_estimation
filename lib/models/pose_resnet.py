@@ -81,7 +81,7 @@ class PoseResNet(Base):
 
     def __init__(self, cfg):
         super(PoseResNet, self).__init__()
-        self.name = 'pose-resnet'
+        self.name = 'pose-resnet-occ'
 
         self.in_planes = 64
         extra = cfg.MODEL.EXTRA

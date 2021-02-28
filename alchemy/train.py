@@ -1,13 +1,11 @@
 import os
 import torch
-# import numpy as np
 
 from core.config import get_config
 from core.functions import validate
 from core.evaluation import calc_accuracy, AverageMeter
 from utils.visual import Visualizer, TbWriter
 from utils.misc import Timer, Recorder
-# from utils.transforms import flip_back
 from utils.factory import getDataset, getModel, getOptim, getScheduler, getCriterion
 
 
@@ -54,12 +52,13 @@ if __name__ == '__main__':
         # 对于BN 和 Dropout有影响, 因为这二者在train和test过程中处理不同
         net.train()
         acces.reset(), losses.reset()
+
         for i, (input, target, meta) in enumerate(train_loader):
             input, target = input.to(device), target.to(device, non_blocking=True)
             target_weight = meta['target_weight'].to(device, non_blocking=True)
 
             output = net(input)
-            loss = criterion(output, target, target_weight)
+            loss = criterion(output, target, target_weight, meta['joints_vis'].to(device))
             acc = calc_accuracy(output, target)
 
             losses.add(loss.item(), input.size(0))
@@ -79,7 +78,7 @@ if __name__ == '__main__':
                 # visualizer.plot(y=losses.mean(), win='training progress', name='debug_loss')
 
         train_loss, train_accuracy = losses.mean(), acces.mean() * 100.0
-    
+
         # 验证
         valid_loss, valid_accuracy = validate(cfg, net, valid_set, valid_loader, criterion, device)
 
