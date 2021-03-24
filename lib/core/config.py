@@ -127,7 +127,7 @@ def get_config():
     if len(sys.argv) > 1:
         _C.EXPERIMENTS_PATH = sys.argv[1]
     else:
-        _C.EXPERIMENTS_PATH = '/root/Projects/refine_estimation/experiments/occ-resnet50.yaml'
+        _C.EXPERIMENTS_PATH = '/root/Projects/refine_estimation/experiments'
 
     if Path(_C.EXPERIMENTS_PATH).is_file():
         print('| load experiments from:', _C.EXPERIMENTS_PATH)
