@@ -81,14 +81,14 @@ class PoseResNet(Base):
 
     def __init__(self, cfg):
         super(PoseResNet, self).__init__()
-        self.name = 'pose-resnet-occ'
+        self.name = 'pose-resnet-refine'
 
         self.in_planes = 64
         extra = cfg.MODEL.EXTRA
         self.deconv_with_bias = extra.DECONV_WITH_BIAS
         block, layers = resnet_spec[cfg.MODEL.EXTRA.NUM_LAYERS]
 
-        self.conv1 = nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3, bias=False)
+        self.conv1 = nn.Conv2d(19, 64, kernel_size=7, stride=2, padding=3, bias=False)
         self.bn1 = nn.BatchNorm2d(64)
 
         self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
@@ -173,27 +173,27 @@ class PoseResNet(Base):
 
             # 预训练backbone载入
             model_dict = self.state_dict()
-            state_dict = {k: v for k, v in torch.load(pretrained).items() if k in model_dict}
+            state_dict = {k: v for k, v in torch.load(pretrained).items() if k in model_dict and k != 'conv1.weight'}
             model_dict.update(state_dict)
             self.load_state_dict(model_dict)
 
-            # 初始化反卷积层
-            print('=> init deconv weights from normal distribution')
-            for m in self.deconv_layers.modules():
-                if isinstance(m, nn.ConvTranspose2d):
-                    nn.init.normal_(m.weight, std=0.001)
-                    if self.deconv_with_bias:
-                        nn.init.constant_(m.bias, 0)
-                elif isinstance(m, nn.BatchNorm2d):
-                    nn.init.constant_(m.weight, 1)
-                    nn.init.constant_(m.bias, 0)
-
-            # 初始化最终输出层
-            print('=> init final conv weights from normal distribution')
-            for m in self.final_layer.modules():
-                if isinstance(m, nn.Conv2d):
-                    nn.init.normal_(m.weight, std=0.001)
-                    nn.init.constant_(m.bias, 0)
+            # # 初始化反卷积层
+            # print('=> init deconv weights from normal distribution')
+            # for m in self.deconv_layers.modules():
+            #     if isinstance(m, nn.ConvTranspose2d):
+            #         nn.init.normal_(m.weight, std=0.001)
+            #         if self.deconv_with_bias:
+            #             nn.init.constant_(m.bias, 0)
+            #     elif isinstance(m, nn.BatchNorm2d):
+            #         nn.init.constant_(m.weight, 1)
+            #         nn.init.constant_(m.bias, 0)
+            #
+            # # 初始化最终输出层
+            # print('=> init final conv weights from normal distribution')
+            # for m in self.final_layer.modules():
+            #     if isinstance(m, nn.Conv2d):
+            #         nn.init.normal_(m.weight, std=0.001)
+            #         nn.init.constant_(m.bias, 0)
         else:
             print('do not have pretrained model')
             # 初始化反卷积层

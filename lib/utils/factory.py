@@ -4,6 +4,7 @@ from core.loss import JointsMSELoss, JointsFocalLoss, JointsMSEBalancedLoss
 
 from models.pose_resnet import PoseResNet
 from datasets.mpii import Mpii
+from datasets.mpii_augment import AugMpii
 from utils.misc import isExists
 
 
@@ -17,6 +18,8 @@ def getDataset(cfg, is_train=True):
 
     if cfg.DATASET.NAME.lower() == 'mpii':
         return Mpii(cfg, is_train)
+    elif cfg.DATASET.NAME.lower() == 'augmpii':
+        return AugMpii(cfg, is_train)
     else:
         raise RuntimeError('Dataset Not Defined! : %s' % cfg.DATASET.NAME)
 

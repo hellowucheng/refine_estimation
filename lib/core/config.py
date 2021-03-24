@@ -21,7 +21,7 @@ _C.NUM_WORKERS = 4
 _C.WORK_DIR = ''
 
 # 配置文件路径
-_C.EXPERIMENTS_PATH = 'D:/Home/Projects/refine_estimation/experiments/pose-resnet50.yaml'
+_C.EXPERIMENTS_PATH = 'D:/Home/Projects/refine_estimation/experiments/refine-50.yaml'
 
 _C.LOG_DIR = ''
 _C.OUTPUT_DIR = ''
@@ -123,13 +123,13 @@ def join_path(root, path):
 def get_config():
     _C.defrost()
 
-    if Path(_C.EXPERIMENTS_PATH).is_file():
-        print('| load experiments from:', _C.EXPERIMENTS_PATH)
-        _C.merge_from_file(_C.EXPERIMENTS_PATH)
-
     # 指定配置文件
     if len(sys.argv) > 1:
         _C.EXPERIMENTS_PATH = sys.argv[1]
+
+    if Path(_C.EXPERIMENTS_PATH).is_file():
+        print('| load experiments from:', _C.EXPERIMENTS_PATH)
+        _C.merge_from_file(_C.EXPERIMENTS_PATH)
 
     # 不同主机路径适配
     if 'Darwin' in platform.platform():
