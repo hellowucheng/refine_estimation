@@ -18,19 +18,19 @@ _C.VISUAL_OUTPUT = True
 
 _C.NUM_WORKERS = 4
 
-_C.WORK_DIR = 'D:/Home/Storehouse/'
+_C.WORK_DIR = ''
 
 # 配置文件路径
-_C.EXPERIMENTS_PATH = 'D:/Home/Projects/pose_estimation/experiments/pose-resnet50.yaml'
+_C.EXPERIMENTS_PATH = 'D:/Home/Projects/refine_estimation/experiments/pose-resnet50.yaml'
 
-_C.LOG_DIR = 'pose_estimation/logs/'
-_C.OUTPUT_DIR = 'D:/Home/Storehouse/pose_estimation/outputs/'
-_C.CHECKPOINTS_PATH = 'pose_estimation/checkpoints/'
+_C.LOG_DIR = ''
+_C.OUTPUT_DIR = ''
+_C.CHECKPOINTS_PATH = ''
 
 # 数据集相关
 _C.DATASET = CN()
 _C.DATASET.NAME = 'mpii'
-_C.DATASET.ROOT = 'Dataset/mpii/'
+_C.DATASET.ROOT = ''
 _C.DATASET.TRAIN_SET = ''
 _C.DATASET.VALID_SET = ''
 _C.DATASET.TEST_SET = ''
@@ -123,27 +123,34 @@ def join_path(root, path):
 def get_config():
     _C.defrost()
 
-    # 指定配置文件
-    if len(sys.argv) > 1:
-        _C.EXPERIMENTS_PATH = sys.argv[1]
-    else:
-        _C.EXPERIMENTS_PATH = '/root/Projects/refine_estimation/experiments'
-
     if Path(_C.EXPERIMENTS_PATH).is_file():
         print('| load experiments from:', _C.EXPERIMENTS_PATH)
         _C.merge_from_file(_C.EXPERIMENTS_PATH)
 
+    # 指定配置文件
+    if len(sys.argv) > 1:
+        _C.EXPERIMENTS_PATH = sys.argv[1]
+
     # 不同主机路径适配
     if 'Darwin' in platform.platform():
         _C.WORK_DIR = '/Users/wucheng/仓库/'
+        _C.LOG_DIR = '/Users/wucheng/仓库/pose_estimation/logs/'
+        _C.OUTPUT_DIR = '/Users/wucheng/仓库/pose_estimation/outputs/'
+        _C.CHECKPOINTS_PATH = '/Users/wucheng/仓库/pose_estimation/checkpoints/'
     elif 'Linux' in platform.platform():
         _C.WORK_DIR = '/data-tmp/'
+        _C.LOG_DIR = '//data-tmp/pose_estimation/logs/'
         _C.OUTPUT_DIR = '/data-output/'
+        _C.CHECKPOINTS_PATH = '/data-tmp/pose_estimation/checkpoints/'
+    else:
+        _C.WORK_DIR = 'D:/Home/Storehouse/'
+        _C.LOG_DIR = 'D:/Home/Storehouse/pose_estimation/logs/'
+        _C.OUTPUT_DIR = 'D:/Home/Storehouse/pose_estimation/outputs/'
+        _C.CHECKPOINTS_PATH = 'D:/Home/Storehouse/pose_estimation/checkpoints/'
 
     # 更新路径
     _C.DATASET.ROOT = join_path(_C.WORK_DIR, _C.DATASET.ROOT)
-    _C.LOG_DIR = join_path(_C.WORK_DIR, _C.LOG_DIR)
-    _C.CHECKPOINTS_PATH = join_path(_C.WORK_DIR, _C.CHECKPOINTS_PATH)
+
     _C.MODEL.RESUME = join_path(_C.WORK_DIR, _C.MODEL.RESUME)
     _C.MODEL.PRETRAINED = join_path(_C.WORK_DIR, _C.MODEL.PRETRAINED)
     _C.TEST.TRAINED_MODEL = join_path(_C.WORK_DIR, _C.TEST.TRAINED_MODEL)

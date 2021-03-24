@@ -3,12 +3,6 @@ import torch
 from core.loss import JointsMSELoss, JointsFocalLoss, JointsMSEBalancedLoss
 
 from models.pose_resnet import PoseResNet
-from models.light_pose_resnet import LightPoseResNet
-from models.light_pose_cpnet import LightPoseCpNet
-from models.light_pose_mobilenet import LightPoseMobileNet
-from models.light_pose_ghostnet import LightPoseGhostNet
-from models.light_pose_shuffnet import LightPoseShuffleNet
-from datasets.lsp import Lspet
 from datasets.mpii import Mpii
 from utils.misc import isExists
 
@@ -21,9 +15,7 @@ def getDataset(cfg, is_train=True):
         print('| valid dataset:', cfg.DATASET.NAME)
         print('  | data-mode:', cfg.TEST.DATA_MODE)
 
-    if cfg.DATASET.NAME.lower() == 'lspet':
-        return Lspet(cfg, is_train)
-    elif cfg.DATASET.NAME.lower() == 'mpii':
+    if cfg.DATASET.NAME.lower() == 'mpii':
         return Mpii(cfg, is_train)
     else:
         raise RuntimeError('Dataset Not Defined! : %s' % cfg.DATASET.NAME)
@@ -34,16 +26,6 @@ def getModel(cfg, is_test=False):
 
     if cfg.MODEL.NAME.lower() == 'pose-resnet':
         model = PoseResNet(cfg)
-    elif cfg.MODEL.NAME.lower() == 'light-pose-resnet':
-        model = LightPoseResNet(cfg)
-    elif cfg.MODEL.NAME.lower() == 'light-pose-cpnet':
-        model = LightPoseCpNet(cfg)
-    elif cfg.MODEL.NAME.lower() == 'light-pose-mobilenet':
-        model = LightPoseMobileNet(cfg)
-    elif cfg.MODEL.NAME.lower() == 'light-pose-ghostnet':
-        model = LightPoseGhostNet(cfg)
-    elif cfg.MODEL.NAME.lower() == 'light-pose-shufflenet':
-        model = LightPoseShuffleNet(cfg)
     else:
         raise RuntimeError('Model Not Defined! : %s' % cfg.MODEL.NAME)
 

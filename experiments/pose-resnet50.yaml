@@ -52,6 +52,6 @@ TEST:
   BATCH_SIZE: 32
   FLIP_TEST: True
 
-  DATA_MODE: 2
+  DATA_MODE: 3
   TRAINED_MODEL: pose_estimation/trained/baseline/pose-resnet50-m.pth
 #  TRAINED_MODEL: pose_estimation/trained/box_refine/resnet-50/pose-resnet-Epoch-{137}-Accuracy-{0.9179}.pth
