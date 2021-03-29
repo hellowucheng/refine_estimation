@@ -21,7 +21,9 @@ _C.NUM_WORKERS = 4
 _C.WORK_DIR = ''
 
 # 配置文件路径
-_C.EXPERIMENTS_PATH = 'D:/Home/Projects/refine_estimation/experiments/refine-50.yaml'
+# _C.EXPERIMENTS_PATH = 'D:/Home/Projects/refine_estimation/experiments/refine-50.yaml'
+_C.EXPERIMENTS_PATH = '/root/Projects/refine_estimation/experiments/refine-50.yaml'
+
 
 _C.LOG_DIR = ''
 _C.OUTPUT_DIR = ''
@@ -139,7 +141,7 @@ def get_config():
         _C.CHECKPOINTS_PATH = '/Users/wucheng/仓库/pose_estimation/checkpoints/'
     elif 'Linux' in platform.platform():
         _C.WORK_DIR = '/data-tmp/'
-        _C.LOG_DIR = '//data-tmp/pose_estimation/logs/'
+        _C.LOG_DIR = '/data-tmp/pose_estimation/logs/'
         _C.OUTPUT_DIR = '/data-output/'
         _C.CHECKPOINTS_PATH = '/data-tmp/pose_estimation/checkpoints/'
     else:

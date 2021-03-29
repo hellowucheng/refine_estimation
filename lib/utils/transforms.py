@@ -1,4 +1,5 @@
 import cv2
+import random
 import numpy as np
 
 
@@ -135,3 +136,13 @@ def flip_back(output, dataset='mpii'):
     for a, b in flip_pairs:
         output[:, a, :, :], output[:, b, :, :] = output[:, b, :, :], output[:, a, :, :].copy()
     return output
+
+
+# 生成扰动
+def jitter(joint, scale, shape=(256, 256)):
+    theta = np.random.uniform(0, 2 * np.pi)
+    r = np.random.randint(scale[0], scale[1])
+    x = r * np.cos(theta)
+    y = r * np.sin(theta)
+    new_x, new_y = np.clip(joint[0] + x, 0, shape[0]), np.clip(joint[1] + y, 0, shape[1])
+    return np.array([new_x, new_y])

@@ -1,10 +1,10 @@
 DATASET:
   NAME: 'AugMpii'
   ROOT: 'Dataset/mpii/'
-  KEEP_ORIGIN: True
+  KEEP_ORIGIN: False
 
   TRAIN_AUGMENT:
-    USE: True
+    USE: False
     FLIP: True
     ROT_FACTOR: 30
     SCALE_FACTOR: 0.2
@@ -12,7 +12,7 @@ DATASET:
 
 MODEL:
   NAME: 'pose-resnet'
-  RESUME:
+  RESUME: /data-tmp/pose_estimation/checkpoints/pose-resnet-refine-Epoch-{4}-Accuracy-{65.1626}.pth
   PRETRAINED: pose_estimation/imagenet-pretrain/resnet50-m.pth
 
   EXTRA:
@@ -31,7 +31,7 @@ MODEL:
 
 
 TRAIN:
-  BATCH_SIZE: 12
+  BATCH_SIZE: 32
 
   LR: 1e-3
   LAST_EPOCH: -1
@@ -53,7 +53,7 @@ TRAIN:
     MIN_LR: 1e-5
 
 TEST:
-  BATCH_SIZE: 32
+  BATCH_SIZE: 1
   FLIP_TEST: True
 
   DATA_MODE: 3
