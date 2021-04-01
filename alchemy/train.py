@@ -1,5 +1,6 @@
 import os
 import torch
+import dsntnn
 
 from core.config import get_config
 from core.functions import validate
@@ -57,8 +58,21 @@ if __name__ == '__main__':
             input, target = input.to(device), target.to(device, non_blocking=True)
             target_weight = meta['target_weight'].to(device, non_blocking=True)
 
-            output = net(input)
-            loss = criterion(output, target, target_weight, meta['joints_vis'].to(device))
+            coords, output = net(input)
+            # loss = criterion(output, target, target_weight, meta['joints_vis'].to(device))
+            # print(coords.shape, output.shape, meta['joints_vis'].shape, type(meta['joints_vis']))
+            # print(meta['joints_vis'].view(input.size(0), -1, 1, 1).shape)
+            # 截断点不计算loss
+            coords = coords * meta['joints_vis'].view(input.size(0), -1, 1).to(device)
+            output = output * meta['joints_vis'].view(input.size(0), -1, 1, 1).to(device)
+            # print(meta['joints_vis'].shape)
+            # print(coords.shape)
+            # print(output.shape)
+            # euc_loss = dsntnn.euclidean_losses(coords, meta['joints_p'].to(device) // 4)
+            reg_loss = dsntnn.js_reg_losses(output, meta['joints_p'].to(device) // 4, sigma_t=1.0)
+            # loss = dsntnn.average_loss(euc_loss + reg_loss)
+            loss = dsntnn.average_loss(reg_loss)
+
             acc = calc_accuracy(output, target)
 
             losses.add(loss.item(), input.size(0))

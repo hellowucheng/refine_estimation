@@ -13,7 +13,7 @@ _C.CUDNN.BENCHMARK = True
 _C.CUDNN.DETERMINISTIC = True
 
 _C.DEBUG_ON = False
-_C.DEBUG_STEPS = 70
+_C.DEBUG_STEPS = 140
 _C.VISUAL_OUTPUT = True
 
 _C.NUM_WORKERS = 4
@@ -21,8 +21,8 @@ _C.NUM_WORKERS = 4
 _C.WORK_DIR = ''
 
 # 配置文件路径
-# _C.EXPERIMENTS_PATH = 'D:/Home/Projects/refine_estimation/experiments/refine-50.yaml'
-_C.EXPERIMENTS_PATH = '/root/Projects/refine_estimation/experiments/refine-50.yaml'
+_C.EXPERIMENTS_PATH = 'D:/Home/Projects/refine_estimation/experiments/refine-50.yaml'
+# _C.EXPERIMENTS_PATH = '/root/Projects/refine_estimation/experiments/refine-50.yaml'
 
 
 _C.LOG_DIR = ''

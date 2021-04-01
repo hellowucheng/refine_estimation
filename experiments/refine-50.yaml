@@ -12,7 +12,7 @@ DATASET:
 
 MODEL:
   NAME: 'pose-resnet'
-  RESUME: /data-tmp/pose_estimation/checkpoints/pose-resnet-refine-Epoch-{4}-Accuracy-{65.1626}.pth
+  RESUME:
   PRETRAINED: pose_estimation/imagenet-pretrain/resnet50-m.pth
 
   EXTRA:
@@ -31,7 +31,7 @@ MODEL:
 
 
 TRAIN:
-  BATCH_SIZE: 32
+  BATCH_SIZE: 12
 
   LR: 1e-3
   LAST_EPOCH: -1

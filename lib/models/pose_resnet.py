@@ -6,6 +6,8 @@ import torch.nn.functional as F
 
 from models.base import Base
 
+import dsntnn
+
 
 class BasicBlock(Base):
     expansion = 1
@@ -162,7 +164,10 @@ class PoseResNet(Base):
         x = self.deconv_layers(x)
         x = self.final_layer(x)
 
-        return x
+        heatmaps = dsntnn.flat_softmax(x)
+        coords = dsntnn.dsnt(heatmaps)
+
+        return coords, heatmaps
 
     def load(self, resume=None, pretrained=None):
         if self._exists(resume):
